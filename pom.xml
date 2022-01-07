@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>be.vdab</groupId>
-    <artifactId>fietsen</artifactId>
+    <artifactId>keuken</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>fietsen</name>
-    <description>fietsen</description>
+    <name>keuken</name>
+    <description>keuken</description>
     <properties>
         <java.version>11</java.version>
     </properties>
@@ -33,12 +33,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.8.0</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -57,10 +51,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.lib</groupId>
-            <artifactId>cvsclient</artifactId>
-            <version>20060125</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
     </dependencies>
 
