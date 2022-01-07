@@ -19,4 +19,8 @@ class JpaDocentRepository implements DocentRepository {
         op deze manier maak je er optional van */
         return Optional.ofNullable(entityManager.find(Docent.class, id));
     }
+    @Override
+    public void create(Docent docent) {
+        entityManager.persist(docent);
+    }
 }
