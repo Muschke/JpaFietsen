@@ -5,6 +5,16 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/*
+
+We kunnen ook methodes aan de class zelf gaan hangen via NamedQuerry:
+
+@NamedQuery(name = "Docent.findByWeddeBetween",
+        query = "select d from Docent d where d.wedde between :van and :tot" +
+                " order by d.wedde, d.id")
+
+Onze namedQuerry wordt via orm.xml geinjecteerd
+                */
 @Entity
 @Table(name="docenten")
 public class Docent {
