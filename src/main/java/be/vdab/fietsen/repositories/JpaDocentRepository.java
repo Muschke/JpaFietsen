@@ -23,4 +23,10 @@ class JpaDocentRepository implements DocentRepository {
     public void create(Docent docent) {
         entityManager.persist(docent);
     }
+
+    @Override
+    public void delete(long id) {
+        findById(id)
+                .ifPresent(docent -> entityManager.remove(docent));
+    }
 }

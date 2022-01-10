@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,11 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @Sql("/insertDocent.sql")
 @Import(JpaDocentRepository.class)
 class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
+    //om te verwijderen heb je entitymanager in de test nodig
+    private final EntityManager entityManager;
     private final JpaDocentRepository repository;
     private static final String DOCENTEN = "docenten";
 
-    public JpaDocentRepositoryTest(JpaDocentRepository repository) {
+    public JpaDocentRepositoryTest(JpaDocentRepository repository, EntityManager entityManager) {
         this.repository = repository;
+        this.entityManager = entityManager;
     }
 
     private Docent docent;
@@ -59,6 +63,15 @@ class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTe
         repository.create(docent);
         assertThat(docent.getId()).isPositive();
         assertThat(countRowsInTableWhere(DOCENTEN, "id=" + docent.getId())).isOne();
+    }
+
+    @Test
+    void delete() {
+        var id = idVanTestMan();
+        repository.delete(id);
+        //entitymanager spaart veranderingen op tot de flush
+        entityManager.flush();
+        assertThat(countRowsInTableWhere(DOCENTEN, "id = " + id)).isZero();
     }
 
     private long idVanTestMan() {
