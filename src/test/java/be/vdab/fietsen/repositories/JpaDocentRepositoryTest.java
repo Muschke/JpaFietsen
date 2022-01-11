@@ -24,6 +24,7 @@ class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTe
     private final EntityManager entityManager;
     private final JpaDocentRepository repository;
     private static final String DOCENTEN = "docenten";
+    private static final String DOCENTEN_BIJNAMEN = "docentenbijnamen";
 
     public JpaDocentRepositoryTest(JpaDocentRepository repository, EntityManager entityManager) {
         this.repository = repository;
@@ -130,6 +131,19 @@ class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTe
                 .isEqualTo(countRowsInTable(DOCENTEN));
         assertThat(countRowsInTableWhere(DOCENTEN,
                 "wedde = 1100 and id = " + idVanTestMan())).isOne();
+    }
+
+    @Test void bijnamenLezen() {
+        assertThat(repository.findById(idVanTestMan()))
+                .hasValueSatisfying(docent ->
+                        assertThat(docent.getBijnamen()).containsOnly("test"));
+    }
+    @Test void bijnaamToevoegen() {
+        repository.create(docent);
+        docent.addBijnaam("test");
+        entityManager.flush();
+        assertThat(countRowsInTableWhere(DOCENTEN_BIJNAMEN,
+                "bijnaam = 'test' and docentId = " + docent.getId())).isOne();
     }
 
     private long idVanTestMan() {

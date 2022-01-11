@@ -4,6 +4,9 @@ package be.vdab.fietsen.domain;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /*
 
@@ -26,6 +29,9 @@ public class Docent {
     private String emailAdres;
     @Enumerated(EnumType.STRING)
     private Geslacht geslacht;
+    @ElementCollection @CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentId"))
+    @Column(name = "bijnaam")
+    private Set<String> bijnamen;
 
     public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht) {
         this.voornaam = voornaam;
@@ -33,6 +39,7 @@ public class Docent {
         this.wedde = wedde;
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
+        this.bijnamen = new LinkedHashSet<>();
     }
 
     protected Docent() {};
@@ -59,6 +66,22 @@ public class Docent {
 
     public Geslacht getGeslacht() {
         return geslacht;
+    }
+
+    /*Methodes voor de hashset*/
+    public boolean addBijnaam(String bijnaam) {
+        if(bijnaam.trim().isEmpty()) {
+            throw  new IllegalArgumentException();
+        }
+        return bijnamen.add(bijnaam);
+    }
+    public boolean removeBijnaam(String bijnaam) {
+        return bijnamen.remove(bijnaam);
+    }
+
+    public Set<String> getBijnamen() {
+        /*Om perongeluk aanpassen van de set via getter te vermijden*/
+        return Collections.unmodifiableSet( bijnamen);
     }
 
     /*Als je update-methode toevoegt aan je domainclass in JPA, commit JPA zelf naar de database. Niet alle methodes
