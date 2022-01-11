@@ -2,6 +2,7 @@ package be.vdab.fietsen.repositories;
 
 import be.vdab.fietsen.domain.Adres;
 import be.vdab.fietsen.domain.Campus;
+import be.vdab.fietsen.domain.TelefoonNr;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -9,7 +10,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import(JpaCampusRepository.class)
@@ -40,6 +40,14 @@ class JpaCampusRepositoryTest extends AbstractTransactionalJUnit4SpringContextTe
         campusRepository.create(campus);
         assertThat(countRowsInTableWhere(CAMPUSSEN,
                 "id =" + campus.getId())).isOne();
+    }
+
+    @Test
+    void telefoonNrsLezen() {
+        assertThat(campusRepository.findById(idVanTestCampus()))
+                .hasValueSatisfying(
+                        campus -> assertThat(campus.getTelefoonNrs())
+                                .containsOnly(new TelefoonNr("1", false, "test")));
     }
 
     private long idVanTestCampus() {
