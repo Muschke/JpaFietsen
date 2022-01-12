@@ -32,14 +32,18 @@ public class Docent {
     @ElementCollection @CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentId"))
     @Column(name = "bijnaam")
     private Set<String> bijnamen;
+    /*1 campus heeft meerdere docenten, we gaan setter voorzien om de campus die bij een docent hoort te veranderen*/
+    @ManyToOne(fetch = FetchType.LAZY, optional = false) @JoinColumn(name = "campusId")
+    private Campus campus;
 
-    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht) {
+    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht, Campus campus) {
         this.voornaam = voornaam;
         this.familienaam = familienaam;
         this.wedde = wedde;
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
         this.bijnamen = new LinkedHashSet<>();
+        this.campus = campus;
     }
 
     protected Docent() {};
@@ -66,6 +70,16 @@ public class Docent {
 
     public Geslacht getGeslacht() {
         return geslacht;
+    }
+
+    /*getter n setter van manyToOne*/
+
+    public Campus getCampus() {
+        return campus;
+    }
+
+    public void setCampus(Campus campus) {
+        this.campus = campus;
     }
 
     /*Methodes voor de hashset*/
