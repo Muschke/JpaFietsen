@@ -32,14 +32,17 @@ public class Docent {
     @ElementCollection @CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentId"))
     @Column(name = "bijnaam")
     private Set<String> bijnamen;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false) @JoinColumn(name = "campusId")
+    private Campus campus;
 
-    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht) {
+    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht, Campus campus) {
         this.voornaam = voornaam;
         this.familienaam = familienaam;
         this.wedde = wedde;
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
         this.bijnamen = new LinkedHashSet<>();
+        setCampus(campus);
     }
 
     protected Docent() {};
@@ -93,5 +96,15 @@ public class Docent {
         }
         var factor = BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
         wedde = wedde.multiply(factor).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /*getter en setter voor campus*/
+
+    public Campus getCampus() {
+        return campus;
+    }
+
+    public void setCampus(Campus campus) {
+        this.campus = campus;
     }
 }
