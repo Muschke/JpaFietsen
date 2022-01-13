@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /*
@@ -32,17 +33,17 @@ public class Docent {
     @ElementCollection @CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentId"))
     @Column(name = "bijnaam")
     private Set<String> bijnamen;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false) @JoinColumn(name = "campusId")
-    private Campus campus;
+    //@ManyToOne(fetch = FetchType.LAZY, optional = false) @JoinColumn(name = "campusId")
+    //private Campus campus;
 
-    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht, Campus campus) {
+    public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht/*, Campus campus*/) {
         this.voornaam = voornaam;
         this.familienaam = familienaam;
         this.wedde = wedde;
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
         this.bijnamen = new LinkedHashSet<>();
-        setCampus(campus);
+        //setCampus(campus);
     }
 
     protected Docent() {};
@@ -99,12 +100,26 @@ public class Docent {
     }
 
     /*getter en setter voor campus*/
-
+/*
     public Campus getCampus() {
         return campus;
     }
 
     public void setCampus(Campus campus) {
         this.campus = campus;
+    }
+    */
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Docent)) return false;
+        Docent docent = (Docent) o;
+        return Objects.equals(voornaam, docent.voornaam) && Objects.equals(familienaam, docent.familienaam) && Objects.equals(emailAdres, docent.emailAdres);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(voornaam, familienaam, emailAdres);
     }
 }
