@@ -1,9 +1,6 @@
 package be.vdab.fietsen.repositories;
 
-import be.vdab.fietsen.domain.Adres;
-import be.vdab.fietsen.domain.Campus;
-import be.vdab.fietsen.domain.Docent;
-import be.vdab.fietsen.domain.Geslacht;
+import be.vdab.fietsen.domain.*;
 import be.vdab.fietsen.projections.AantalDocentenPerWedde;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest(showSql = false)
-@Sql({"/insertCampus.sql", "/insertDocent.sql"})
+@Sql({"/insertCampus.sql", "/insertVerantwoordelijkheid.sql",
+        "/insertDocent.sql", "/insertDocentVerantwoordelijkheid.sql"})
 @Import(JpaDocentRepository.class)
 class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
     //om te verwijderen heb je entitymanager in de test nodig
@@ -27,6 +25,8 @@ class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTe
     private final JpaDocentRepository repository;
     private static final String DOCENTEN = "docenten";
     private static final String DOCENTEN_BIJNAMEN = "docentenbijnamen";
+    private static final String DOCENTEN_VERANTWOORDELIJKHEDEN =
+            "docentenverantwoordelijkheden";
 
     public JpaDocentRepositoryTest(JpaDocentRepository repository, EntityManager entityManager) {
         this.repository = repository;
@@ -162,6 +162,26 @@ class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTe
         assertThat(repository.findById(idVanTestMan()))
                 .hasValueSatisfying(
                         docent -> assertThat(docent.getCampus().getNaam()).isEqualTo("test"));
+    }
+
+    @Test
+    void verantwoordelijkhedenLezen() {
+        assertThat(repository.findById(idVanTestMan()))
+                .hasValueSatisfying(
+                        docent -> assertThat(docent.getVerantwoordelijkheden())
+                                .containsOnly(new Verantwoordelijkheid("test")));
+    }
+    @Test
+    void verantwoordelijkheidToevoegen() {
+        var verantwoordelijkheid = new Verantwoordelijkheid("test2");
+        entityManager.persist(verantwoordelijkheid);
+        entityManager.persist(campus);
+        repository.create(docent);
+        docent.add(verantwoordelijkheid);
+        entityManager.flush();
+        assertThat(countRowsInTableWhere(DOCENTEN_VERANTWOORDELIJKHEDEN,
+                "docentId = " + docent.getId() +
+                        " and verantwoordelijkheidId = " + verantwoordelijkheid.getId())).isOne();
     }
 
     private long idVanTestMan() {

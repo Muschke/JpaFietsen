@@ -35,6 +35,8 @@ public class Docent {
     private Set<String> bijnamen;
     @ManyToOne(fetch = FetchType.LAZY, optional = false) @JoinColumn(name = "campusId")
     private Campus campus;
+    @ManyToMany(mappedBy = "docenten")
+    private Set<Verantwoordelijkheid> verantwoordelijkheden = new LinkedHashSet<>();
 
     public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht, Campus campus) {
         this.voornaam = voornaam;
@@ -124,5 +126,24 @@ public class Docent {
     @Override
     public int hashCode() {
         return Objects.hash(voornaam, familienaam, emailAdres);
+    }
+
+    /*methodes voor verantwoordelijkheid*/
+    public boolean add(Verantwoordelijkheid verantwoordelijkheid) {
+        var toegevoegd = verantwoordelijkheden.add(verantwoordelijkheid);
+        if ( ! verantwoordelijkheid.getDocenten().contains(this)) {
+            verantwoordelijkheid.add(this);
+        }
+        return toegevoegd;
+    }
+    public boolean remove(Verantwoordelijkheid verantwoordelijkheid) {
+        var verwijderd = verantwoordelijkheden.remove(verantwoordelijkheid);
+        if (verantwoordelijkheid.getDocenten().contains(this)) {
+            verantwoordelijkheid.remove(this);
+        }
+        return verwijderd;
+    }
+    public Set<Verantwoordelijkheid> getVerantwoordelijkheden() {
+        return Collections.unmodifiableSet(verantwoordelijkheden);
     }
 }

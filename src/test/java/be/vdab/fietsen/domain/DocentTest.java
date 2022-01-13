@@ -9,13 +9,12 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DocentTest {
-
-    //dat wilt natuurlijk zeggen, dat je meer testen rechtreeks op je domainclass zal hebben dan zonder JPA
     private  final static BigDecimal WEDDE = BigDecimal.valueOf(200);
     private Docent docent1;
     private Campus campus1;
     private Docent docent2;
     private Campus campus2;
+    private Verantwoordelijkheid verantwoordelijkheid;
 
     @BeforeEach
     void beforeEach() {
@@ -23,6 +22,7 @@ class DocentTest {
         campus2 = new Campus("test2", new Adres("test2", "test2", "test2", "test2"));
         docent1 = new Docent("test", "test", WEDDE, "test@test.be",Geslacht.MAN, campus1);
         docent2 = new Docent("test2", "test2", WEDDE, "test2@test.be", Geslacht.MAN, campus1);
+        verantwoordelijkheid = new Verantwoordelijkheid("EHBO");
     }
 
     @Test void docent1KomtVoorInCampus1() {
@@ -92,6 +92,19 @@ class DocentTest {
         docent1.addBijnaam("test");
         assertThat(docent1.removeBijnaam("test2")).isFalse();
         assertThat(docent1.getBijnamen()).containsOnly("test");
+    }
+    @Test
+    void verantwoordelijkheidToevoegen() {
+        assertThat(docent1.add(verantwoordelijkheid)).isTrue();
+        assertThat(docent1.getVerantwoordelijkheden())
+                .containsOnly(verantwoordelijkheid);
+        assertThat(verantwoordelijkheid.getDocenten()).containsOnly(docent1);
+    }
+    @Test
+    void verantwoordelijkheidVerwijderen() {
+        assertThat(docent1.add(verantwoordelijkheid)).isTrue();
+        assertThat(docent1.remove(verantwoordelijkheid)).isTrue();
+        assertThat(docent1.getVerantwoordelijkheden()).isEmpty();
     }
 
 }
